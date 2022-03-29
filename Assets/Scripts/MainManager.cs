@@ -19,6 +19,7 @@ public class MainManager : MonoBehaviour
     private int highScore;
     
     private bool m_GameOver = false;
+    public string pastPlayer;
 
    
     
@@ -28,8 +29,7 @@ public class MainManager : MonoBehaviour
         if (DataManager.Instance != null)
         {
             highScore = DataManager.Instance.GetHighscore();
-            if(highScore > 0)
-                SetName(DataManager.Instance.userName);
+            SetName(DataManager.Instance.userName);
         }
 
         const float step = 0.6f;
@@ -109,11 +109,11 @@ public class MainManager : MonoBehaviour
         {
             highScore = score;
             DataManager.Instance.UpdateHighScore(score);
-            SetName(DataManager.Instance.userName);
             DataManager.Instance.SavePlayerData();
         }
-          
     }
+    
+    
     
     
     
