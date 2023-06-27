@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class MainManager : MonoBehaviour
 {
@@ -13,10 +15,12 @@ public class MainManager : MonoBehaviour
     public Text ScoreText;
     public Text BestScore;
     public GameObject GameOverText;
+    public GameObject GameWonText;
     
     private bool m_Started = false;
     private int m_Points;
     private int highScore;
+    private int brickCount;
     
     private bool m_GameOver = false;
     public string pastPlayer;
@@ -29,14 +33,14 @@ public class MainManager : MonoBehaviour
         if (DataManager.Instance != null)
         {
             highScore = DataManager.Instance.GetHighscore();
-            SetName(DataManager.Instance.userName);
+            SetName(DataManager.Instance.highScorePlayer);
         }
 
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
         int[] pointCountArray = new [] {1,1,2,2,5,5};
-        for (int i = 0; i < LineCount; ++i)
+        for (int i = 0; i < 1; ++i)
         {
             for (int x = 0; x < perLine; ++x)
             {
@@ -44,6 +48,7 @@ public class MainManager : MonoBehaviour
                 var brick = Instantiate(BrickPrefab, position, Quaternion.identity);
                 brick.PointValue = pointCountArray[i];
                 brick.onDestroyed.AddListener(AddPoint);
+                brickCount++;
             }
         }
     }
@@ -70,12 +75,16 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
+        
+        if(brickCount == 0)
+            GameWon();
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        brickCount--;
     }
 
     public void GameOver()
@@ -92,7 +101,7 @@ public class MainManager : MonoBehaviour
 
     public void SetName(string name)
     {
-        BestScore.text = "Highscore : " + name + " : " + highScore;
+        BestScore.text = name + " - " + highScore;
     }
 
     public bool CompareScore(int score)
@@ -112,8 +121,23 @@ public class MainManager : MonoBehaviour
             DataManager.Instance.SavePlayerData();
         }
     }
+
+
+    private void GameWon()
+    {
+        
+        GameWonText.SetActive(true);
+        ChangeHighScore(m_Points);
+        Ball.gameObject.SetActive(false);
+        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
     
     
+  
     
     
     

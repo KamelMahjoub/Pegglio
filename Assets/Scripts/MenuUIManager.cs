@@ -15,13 +15,15 @@ public class MenuUIManager : MonoBehaviour
 
     public TMP_InputField nameField;
     public TextMeshProUGUI highScore;
+    private string highScorePlayer;
     private string playerName;
+    
 
     private void Awake()
     {
         DataManager.Instance.LoadData();
-        nameField.text = DataManager.Instance.userName;
-        highScore.text = "High Score : " + DataManager.Instance.userName + " : " + DataManager.Instance.highScore;
+        highScore.text = DataManager.Instance.userName + " - " + DataManager.Instance.highScore;
+        DataManager.Instance.SetHighScorePlayer(DataManager.Instance.userName);
     }
 
     public void StartGame()
@@ -48,5 +50,6 @@ public class MenuUIManager : MonoBehaviour
     {
         playerName = nameField.text;
         DataManager.Instance.SetUserName(playerName);
+        
     }
 }
